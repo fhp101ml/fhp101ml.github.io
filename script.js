@@ -65,6 +65,15 @@ form.addEventListener('submit', function (event) {
     const serviceID = 'service_7figj0j';
     const templateID = 'template_7k1g6ar';
 
+    // Client-side ReCAPTCHA validation
+    const recaptchaResponse = grecaptcha.getResponse();
+    if (!recaptchaResponse) {
+        alert("Por favor, verifica que no eres un robot.");
+        btn.innerText = originalText;
+        btn.disabled = false;
+        return;
+    }
+
     emailjs.sendForm(serviceID, templateID, this)
         .then(() => {
             btn.innerText = '¡Mensaje Enviado!';
