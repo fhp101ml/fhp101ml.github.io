@@ -6,6 +6,8 @@
     /* Sky blue */
     --accent-color: #a855f7;
     /* Purple */
+    --glass-bg: rgba(30, 41, 59, 0.7);
+    --glass-border: rgba(255, 255, 255, 0.1);
     --big-font: 5rem;
     --h2-font: 3rem;
     --p-font: 1.1rem;
@@ -25,6 +27,10 @@
 
 body {
     background: var(--bg-color);
+    background-image:
+        radial-gradient(circle at 0% 0%, rgba(56, 189, 248, 0.15) 0%, transparent 50%),
+        radial-gradient(circle at 100% 100%, rgba(168, 85, 247, 0.15) 0%, transparent 50%);
+    background-attachment: fixed;
     color: var(--text-color);
     overflow-x: hidden;
     cursor: none;
@@ -63,12 +69,38 @@ body {
     left: 0;
     width: 100%;
     padding: 2rem 9%;
-    background: rgba(15, 23, 42, 0.9);
+    background: rgba(15, 23, 42, 0.7);
     backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
     display: flex;
     justify-content: space-between;
     align-items: center;
     z-index: 100;
+}
+
+.lang-switch {
+    display: flex;
+    align-items: center;
+    margin-right: 2rem;
+}
+
+.lang-btn {
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--text-color);
+    transition: var(--transition);
+}
+
+.lang-btn:hover,
+.lang-btn.active {
+    color: var(--main-color);
+}
+
+.divider {
+    margin: 0 0.5rem;
+    color: var(--text-color);
+    opacity: 0.5;
 }
 
 .logo {
@@ -110,6 +142,7 @@ body {
 .navbar a:hover,
 .navbar a.active {
     color: var(--main-color);
+    text-shadow: 0 0 10px rgba(56, 189, 248, 0.5);
 }
 
 .navbar a:hover::after,
@@ -134,7 +167,7 @@ section {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background: radial-gradient(circle at top right, rgba(56, 189, 248, 0.1), transparent 40%);
+    background: transparent;
 }
 
 .hero-content {
@@ -155,6 +188,7 @@ section {
     line-height: 1.1;
     margin-bottom: 1rem;
     background: linear-gradient(to right, var(--text-color), var(--main-color));
+    background-clip: text;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 }
@@ -235,7 +269,7 @@ section {
 /* Code Block Visual */
 .hero-visual {
     position: relative;
-    width: 450px;
+    width: 500px;
     perspective: 1000px;
 }
 
@@ -306,7 +340,7 @@ pre {
 
 /* About Section */
 .about {
-    background: var(--second-bg-color);
+    background: transparent;
 }
 
 .section-title {
@@ -315,13 +349,13 @@ pre {
     margin-bottom: 4rem;
 }
 
-.section-title span {
+.section-title .highlight {
     color: var(--main-color);
 }
 
 .about-container {
     display: grid;
-    grid-template-columns: 1fr 1.2fr;
+    grid-template-columns: 0.8fr 1.5fr;
     gap: 3rem;
     align-items: center;
 }
@@ -372,12 +406,20 @@ pre {
 }
 
 .skill-card {
-    background: rgba(255, 255, 255, 0.05);
+    background: var(--glass-bg);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
     padding: 1.5rem;
     border-radius: 12px;
     text-align: center;
     transition: var(--transition);
     border: 1px solid rgba(255, 255, 255, 0.05);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    aspect-ratio: 1 / 1;
+    gap: 0.5rem;
 }
 
 .skill-card:hover {
@@ -389,7 +431,8 @@ pre {
 .skill-card i {
     font-size: 2.5rem;
     color: var(--main-color);
-    margin-bottom: 0.5rem;
+    margin-bottom: 0;
+    /* Handled by gap */
 }
 
 /* Projects Section */
@@ -404,7 +447,11 @@ pre {
 }
 
 .project-card {
-    background: var(--second-bg-color);
+    position: relative;
+    /* For badge positioning */
+    background: var(--glass-bg);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
     border-radius: 20px;
     overflow: hidden;
     height: 100%;
@@ -428,11 +475,13 @@ pre {
 .project-img .overlay {
     position: absolute;
     inset: 0;
-    background: radial-gradient(circle, rgba(56, 189, 248, 0.2), transparent);
+    background: radial-gradient(circle, rgba(56, 189, 248, 0.1), transparent);
 }
 
 .project-info {
     padding: 2rem;
+    padding-bottom: 3.5rem;
+    /* Make room for the status badge */
 }
 
 .project-info h3 {
@@ -478,9 +527,96 @@ pre {
     color: var(--main-color);
 }
 
+/* Project Status Styles */
+.project-legend {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    margin-bottom: 3rem;
+    flex-wrap: wrap;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+    color: var(--text-color);
+}
+
+.legend-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+}
+
+.status-badge {
+    position: absolute;
+    bottom: 1.5rem;
+    right: 1.5rem;
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    top: auto;
+    /* Override previous top positioning */
+}
+
+/* Active Development */
+.project-card.status-dev {
+    border-color: #22c55e;
+    box-shadow: 0 0 20px rgba(34, 197, 94, 0.15);
+}
+
+.project-card.status-dev .status-badge {
+    background: rgba(34, 197, 94, 0.15);
+    color: #22c55e;
+    border: 1px solid #22c55e;
+    animation: pulse-badge 2s infinite;
+}
+
+/* Personal Roadmap */
+.project-card.status-personal {
+    border-color: var(--accent-color);
+}
+
+.project-card.status-personal .status-badge {
+    background: rgba(168, 85, 247, 0.15);
+    color: var(--accent-color);
+    border: 1px solid var(--accent-color);
+}
+
+/* Roadmap (New Ideas) */
+.project-card.status-roadmap {
+    border-color: rgba(255, 255, 255, 0.1);
+    opacity: 0.9;
+}
+
+.project-card.status-roadmap .status-badge {
+    background: rgba(226, 232, 240, 0.1);
+    color: #94a3b8;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+@keyframes pulse-badge {
+    0% {
+        box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.4);
+    }
+
+    70% {
+        box-shadow: 0 0 0 5px rgba(34, 197, 94, 0);
+    }
+
+    100% {
+        box-shadow: 0 0 0 0 rgba(34, 197, 94, 0);
+    }
+}
+
 /* Contact Section */
 .contact {
-    background: var(--second-bg-color);
+    background: transparent;
 }
 
 .contact-container {
@@ -661,4 +797,18 @@ pre {
     display: flex;
     justify-content: center;
     /* Center the captcha */
+}
+
+/* Scroll Reveal Animations */
+.hidden {
+    opacity: 0;
+    transform: translateY(50px);
+    filter: blur(5px);
+    transition: all 1s ease-out;
+}
+
+.show {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0);
 }
