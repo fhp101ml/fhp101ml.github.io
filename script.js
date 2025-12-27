@@ -50,24 +50,44 @@ sections.forEach(section => {
 });
 
 // Form Submission (Prevent Default for Demo)
-const form = document.querySelector('form');
-form.addEventListener('submit', (e) => {
-    e.preventDefault();
+// EmailJS Form Submission
+const form = document.getElementById('contact-form');
+
+form.addEventListener('submit', function (event) {
+    event.preventDefault();
     const btn = form.querySelector('button');
     const originalText = btn.innerText;
 
     btn.innerText = 'Enviando...';
+    btn.disabled = true;
 
-    setTimeout(() => {
-        btn.innerText = '¡Mensaje Enviado!';
-        btn.style.background = '#27c93f'; // Green
-        form.reset();
+    // Replace these with your actual Service ID and Template ID
+    const serviceID = 'service_7figj0j';
+    const templateID = 'template_7k1g6ar';
 
-        setTimeout(() => {
-            btn.innerText = originalText;
-            btn.style.background = '';
-        }, 3000);
-    }, 1500);
+    emailjs.sendForm(serviceID, templateID, this)
+        .then(() => {
+            btn.innerText = '¡Mensaje Enviado!';
+            btn.style.background = '#27c93f'; // Green
+            form.reset();
+
+            setTimeout(() => {
+                btn.innerText = originalText;
+                btn.style.background = '';
+                btn.disabled = false;
+            }, 3000);
+        }, (err) => {
+            btn.innerText = 'Error al enviar';
+            btn.style.background = '#ff3e3e'; // Red
+            console.error('FAILED...', err);
+            alert(JSON.stringify(err));
+
+            setTimeout(() => {
+                btn.innerText = originalText;
+                btn.style.background = '';
+                btn.disabled = false;
+            }, 3000);
+        });
 });
 
 // Glitch Effect Randomizer on Hover
