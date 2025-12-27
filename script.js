@@ -91,7 +91,7 @@ form.addEventListener('submit', function (event) {
     const isLocal = ['localhost', '127.0.0.1'].includes(window.location.hostname);
 
     // PRODUCTION URL (Render) - You will update this after deployment
-    const BACKEND_URL = "https://tu-portfolio-backend.onrender.com/send-email";
+    const BACKEND_URL = "https://fhp101ml-github-io.onrender.com/send-email";
 
     if (isLocal) {
         // --- LOCAL: EmailJS ---
