@@ -269,18 +269,24 @@ section {
 /* Code Block Visual */
 .hero-visual {
     position: relative;
-    width: 500px;
+    width: 650px;
     perspective: 1000px;
 }
 
 .code-block {
     background: #1e293b;
     border-radius: 12px;
-    padding: 20px;
+    padding: 30px;
+    /* Increased padding for height */
     box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
     border: 1px solid rgba(255, 255, 255, 0.1);
     transform: rotateY(-10deg) rotateX(5deg);
     transition: transform 0.5s ease;
+    min-height: 350px;
+    /* Force minimum height */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 }
 
 .hero-visual:hover .code-block {
@@ -314,7 +320,8 @@ section {
 pre {
     color: #e2e8f0;
     font-family: 'Consolas', monospace;
-    font-size: 0.9rem;
+    font-size: 1rem;
+    /* Increased from 0.9rem (approx 10%) */
     overflow-x: auto;
 }
 

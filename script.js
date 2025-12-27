@@ -78,43 +78,91 @@ form.addEventListener('submit', function (event) {
     btn.innerText = 'Enviando...';
     btn.disabled = true;
 
-    // Replace these with your actual Service ID and Template ID
-    const serviceID = 'service_7figj0j';
-    const templateID = 'template_7k1g6ar';
-
     // Client-side ReCAPTCHA validation
     const recaptchaResponse = grecaptcha.getResponse();
     if (!recaptchaResponse) {
-        alert("Por favor, verifica que no eres un robot.");
+        alert("Please confirm you are not a robot / Por favor verifica que no eres un robot.");
         btn.innerText = originalText;
         btn.disabled = false;
         return;
     }
 
-    emailjs.sendForm(serviceID, templateID, this)
-        .then(() => {
-            btn.innerText = '¡Mensaje Enviado!';
-            btn.style.background = '#27c93f'; // Green
-            form.reset();
+    // Determine Environment and Action
+    const isLocal = ['localhost', '127.0.0.1'].includes(window.location.hostname);
 
-            setTimeout(() => {
-                btn.innerText = originalText;
-                btn.style.background = '';
-                btn.disabled = false;
-            }, 3000);
-        }, (err) => {
-            btn.innerText = 'Error al enviar';
-            btn.style.background = '#ff3e3e'; // Red
-            console.error('FAILED...', err);
-            alert(JSON.stringify(err));
+    // PRODUCTION URL (Render) - You will update this after deployment
+    const BACKEND_URL = "https://fhp101ml-github-io.onrender.com/send-email";
 
-            setTimeout(() => {
-                btn.innerText = originalText;
-                btn.style.background = '';
-                btn.disabled = false;
-            }, 3000);
-        });
+    if (isLocal) {
+        // --- LOCAL: EmailJS ---
+        console.log("Environment: Local (using EmailJS)");
+        const serviceID = 'service_7figj0j';
+        const templateID = 'template_7k1g6ar';
+
+        emailjs.sendForm(serviceID, templateID, this)
+            .then(() => {
+                handleSuccess(btn, form, originalText);
+            }, (err) => {
+                handleError(btn, originalText, err);
+            });
+
+    } else {
+        // --- PRODUCTION: Backend (FastAPI + Mailjet) ---
+        console.log("Environment: Production (using Custom Backend)");
+
+        // Convert FormData to JSON
+        const formData = new FormData(form);
+        const data = Object.fromEntries(formData.entries());
+
+        fetch(BACKEND_URL, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(data)
+        })
+            .then(response => {
+                if (response.ok) {
+                    return response.json();
+                }
+                throw new Error('Network response was not ok.');
+            })
+            .then(data => {
+                handleSuccess(btn, form, originalText);
+            })
+            .catch(error => {
+                console.error('Fetch Error:', error);
+                handleError(btn, originalText, error);
+            });
+    }
 });
+
+function handleSuccess(btn, form, originalText) {
+    btn.innerText = '¡Mensaje Enviado! / Sent!';
+    btn.style.background = '#27c93f'; // Green
+    form.reset();
+    if (window.grecaptcha) grecaptcha.reset();
+
+    setTimeout(() => {
+        btn.innerText = originalText;
+        btn.style.background = ''; // Reset CSS
+        btn.disabled = false;
+    }, 4000);
+}
+
+function handleError(btn, originalText, err) {
+    btn.innerText = 'Error';
+    btn.style.background = '#ff0000';
+    console.error('FAILED...', err);
+    alert('Failed to send message. Please try again later.');
+
+    setTimeout(() => {
+        btn.innerText = originalText;
+        btn.style.background = '';
+        btn.disabled = false;
+    }, 3000);
+}
+
 
 // Glitch Effect Randomizer on Hover
 const glitch = document.querySelector('.glitch');
