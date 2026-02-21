@@ -332,6 +332,8 @@
                 cursor: pointer;
                 transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.8s ease;
                 border-radius: 24px;
+                will-change: transform, opacity;
+                /* Hardware acceleration hint */
             }
 
             .item-content {
@@ -345,6 +347,8 @@
                 box-shadow: 0 30px 60px rgba(0, 0, 0, 0.6);
                 transform: translateZ(0);
                 transition: box-shadow 0.6s ease, border-color 0.6s ease, transform 0.6s ease;
+                will-change: transform;
+                /* Hardware acceleration hint */
             }
 
             .carousel-item:hover .item-content {
@@ -551,51 +555,80 @@
         </div>
 
         <script>
-            // Organic Parallax and 3D Depth Logic
+            // Optimized Organic Parallax and 3D Depth Logic
             const track = document.getElementById('cinematic-track');
             const items = document.querySelectorAll('.carousel-item');
 
+            // Cache item data to avoid layout thrashing (getBoundingClientRect)
+            let itemData = [];
+            let viewportHalf = window.innerWidth / 2;
+
+            const cacheItemData = () => {
+                viewportHalf = window.innerWidth / 2;
+                itemData = Array.from(items).map(item => ({
+                    el: item,
+                    content: item.querySelector('.item-content'),
+                    // offsetLeft is relative to the offsetParent (the track)
+                    centerOffset: item.offsetLeft + item.offsetWidth / 2
+                }));
+            };
+
             const updateItems = () => {
-                const center = window.innerWidth / 2;
+                const scrollLeft = track.scrollLeft;
 
-                items.forEach(item => {
-                    const rect = item.getBoundingClientRect();
-                    const itemCenter = rect.left + rect.width / 2;
-                    const distanceFromCenter = itemCenter - center;
-                    const normalizedDistance = distanceFromCenter / (window.innerWidth / 2);
+                for (let i = 0; i < itemData.length; i++) {
+                    const item = itemData[i];
+                    // Calculate center position without triggering layout
+                    const distanceFromCenter = item.centerOffset - (scrollLeft + viewportHalf);
+                    const normalizedDistance = distanceFromCenter / viewportHalf;
 
-                    // 3D Transform: Dynamic Rotation and Depth based on scroll position
-                    // We use non-linear mapping for a more cinematic feel
+                    // Only update if within reasonable range to save GPU cycles
+                    if (Math.abs(normalizedDistance) > 2) {
+                        item.el.style.opacity = '0';
+                        continue;
+                    }
+
                     const rotIntensity = 25;
                     const depthIntensity = 300;
 
-                    const rotation = normalizedDistance * -rotIntensity; // Tilt away
-                    const depth = Math.pow(Math.abs(normalizedDistance), 1.2) * -depthIntensity; // Sink into distance
-                    const scale = 1.1 - Math.pow(Math.abs(normalizedDistance), 0.8) * 0.3; // Center is largest
-                    const opacity = 1.1 - Math.abs(normalizedDistance) * 0.8; // Extreme fade at edges
+                    const rotation = normalizedDistance * -rotIntensity;
+                    const depth = Math.pow(Math.abs(normalizedDistance), 1.2) * -depthIntensity;
+                    const scale = 1.1 - Math.pow(Math.abs(normalizedDistance), 0.8) * 0.3;
+                    const opacity = 1.1 - Math.abs(normalizedDistance) * 0.8;
 
-                    item.style.transform = `
-                        rotateY(${rotation}deg) 
-                        translateZ(${depth}px) 
-                        scale(${scale})
-                    `;
-                    item.style.opacity = Math.max(0, Math.min(1, opacity));
+                    // Apply transforms
+                    item.el.style.transform = `rotateY(${rotation}deg) translateZ(${depth}px) scale(${scale})`;
+                    item.el.style.opacity = Math.max(0, Math.min(1, opacity));
 
-                    // Parallax effect on inner content
-                    const content = item.querySelector('.item-content');
-                    if (content) {
-                        content.style.transform = `translateX(${normalizedDistance * -30}px)`;
+                    // Parallax on inner content
+                    if (item.content) {
+                        item.content.style.transform = `translateX(${normalizedDistance * -30}px)`;
                     }
-                });
+                }
             };
 
+            // RAF Throttling for scroll
+            let isUpdatePending = false;
             track.addEventListener('scroll', () => {
-                requestAnimationFrame(updateItems);
-            });
-            window.addEventListener('resize', updateItems);
+                if (!isUpdatePending) {
+                    isUpdatePending = true;
+                    requestAnimationFrame(() => {
+                        updateItems();
+                        isUpdatePending = false;
+                    });
+                }
+            }, { passive: true });
 
-            // Initial call
-            setTimeout(updateItems, 100);
+            window.addEventListener('resize', () => {
+                cacheItemData();
+                updateItems();
+            });
+
+            // Initial setup
+            setTimeout(() => {
+                cacheItemData();
+                updateItems();
+            }, 100);
 
             // High-precision mouse-tracking glow effect
             items.forEach(item => {
