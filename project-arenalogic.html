@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ArenaLogic | fhp101ml</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css?v=1.1">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .project-detail {
+            padding-top: 12rem;
+            min-height: 100vh;
+        }
+
+        .project-header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .project-header h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(to right, var(--text-color), var(--main-color));
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .project-meta {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .project-meta span {
+            background: rgba(56, 189, 248, 0.1);
+            color: var(--main-color);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+        }
+
+        /* Modern Gallery Styles */
+        .gallery-container {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            padding: 2rem 0;
+            margin-bottom: 4rem;
+            perspective: 1000px;
+            flex-wrap: wrap;
+        }
+
+        .gallery-item {
+            position: relative;
+            width: 45%;
+            max-width: 500px;
+            cursor: pointer;
+            transition: transform 0.5s ease, box-shadow 0.5s ease;
+            transform-style: preserve-3d;
+            border-radius: 15px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .gallery-item:hover {
+            transform: translateY(-10px) rotateX(5deg);
+            box-shadow: 0 20px 40px rgba(56, 189, 248, 0.2);
+            border-color: var(--main-color);
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 350px;
+            object-fit: contain;
+            object-position: center;
+            display: block;
+            transition: transform 0.5s ease;
+            background: var(--glass-bg);
+        }
+
+        .gallery-item:hover img {
+            transform: scale(1.05);
+        }
+
+        .gallery-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, rgba(15, 23, 42, 0.8), transparent);
+            opacity: 0;
+            transition: opacity 0.3s;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            padding-bottom: 1.5rem;
+        }
+
+        .gallery-item:hover .gallery-overlay {
+            opacity: 1;
+        }
+
+        .gallery-overlay i {
+            color: var(--text-color);
+            font-size: 1.5rem;
+            background: var(--main-color);
+            padding: 0.8rem;
+            border-radius: 50%;
+            box-shadow: 0 0 15px var(--main-color);
+        }
+
+        .project-content {
+            max-width: 800px;
+            margin: 0 auto;
+            background: var(--glass-bg);
+            padding: 3rem;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            margin-bottom: 4rem;
+        }
+
+        .project-content h2 {
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            color: var(--main-color);
+        }
+
+        .project-content p {
+            color: #94a3b8;
+            line-height: 1.8;
+            margin-bottom: 1.5rem;
+        }
+
+        .project-content ul {
+            list-style: none;
+            margin-bottom: 1.5rem;
+        }
+
+        .project-content ul li {
+            color: #94a3b8;
+            margin-bottom: 0.8rem;
+            padding-left: 1.5rem;
+            position: relative;
+        }
+
+        .project-content ul li::before {
+            content: '▹';
+            position: absolute;
+            left: 0;
+            color: var(--main-color);
+        }
+
+        .back-btn-container {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        /* Lightbox Styles */
+        .lightbox {
+            position: fixed;
+            z-index: 10000;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(10px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .lightbox.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .lightbox img {
+            max-width: 90%;
+            max-height: 85vh;
+            border-radius: 10px;
+            box-shadow: 0 0 50px rgba(0, 0, 0, 0.5);
+            transform: scale(0.9);
+            transition: transform 0.3s ease;
+        }
+
+        .lightbox.active img {
+            transform: scale(1);
+        }
+
+        .close-lightbox {
+            position: absolute;
+            top: 2rem;
+            right: 2rem;
+            color: var(--text-color);
+            font-size: 2rem;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        .close-lightbox:hover {
+            color: var(--main-color);
+        }
+
+        /* Mobile adjustments */
+        @media (max-width: 768px) {
+            .project-header h1 {
+                font-size: 2.5rem;
+            }
+
+            .gallery-item {
+                width: 90%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="cursor-dot"></div>
+    <div class="cursor-outline"></div>
+
+    <header class="header">
+        <a href="index.html" class="logo">fhp101ml<span class="dot">.</span></a>
+        <nav class="navbar">
+            <a href="index.html#home" data-i18n="nav-home">Home</a>
+            <a href="index.html#projects" class="active" data-i18n="nav-projects">Projects</a>
+            <a href="index.html#contact" data-i18n="nav-contact">Contact</a>
+        </nav>
+        <div class="lang-switch">
+            <span class="lang-btn active" data-lang="en">EN</span>
+            <span class="divider">|</span>
+            <span class="lang-btn" data-lang="es">ES</span>
+        </div>
+        <div class="menu-btn">
+            <i class="fas fa-bars"></i>
+        </div>
+    </header>
+
+    <section class="project-detail">
+        <div class="project-header">
+            <h1 data-i18n="arena-title">ArenaLogic - Logic Gates Multiplayer</h1>
+            <div class="project-meta">
+                <span>FastAPI</span>
+                <span>Socket.IO</span>
+                <span>React</span>
+                <span>OpenAI GPT-4o-mini</span>
+                <span>Whisper</span>
+                <span>Edge-TTS</span>
+                <span>Accessibility</span>
+            </div>
+        </div>
+
+        <div class="project-content" style="margin-top: 4rem; margin-bottom: 8rem;">
+            <h2 data-i18n="arena-about-title">About the Project</h2>
+            <p data-i18n="arena-about-desc">
+                A real-time competitive multiplayer game where teams collaborate to solve logic gate challenges.
+                Features full voice accessibility for visually impaired players using AI-powered narration and voice
+                commands.
+            </p>
+
+            <h2 data-i18n="arena-features-title">Key Features</h2>
+            <ul>
+                <li data-i18n="arena-feat-1"><strong>Real-time Multiplayer:</strong> Socket.IO powered synchronization
+                    for team-based competition (Alpha/Beta teams).</li>
+                <li data-i18n="arena-feat-2"><strong>Accessibility Innovation:</strong> Complete voice control system
+                    for visually impaired players including voice commands and auto-narration.</li>
+                <li data-i18n="arena-feat-3"><strong>AI Assistant:</strong> LangGraph-powered agent with conversation
+                    memory that guides players and handles voice-controlled instructions.</li>
+                <li data-i18n="arena-feat-4"><strong>Advanced Game Mechanics:</strong> Multiple game modes (Competitive,
+                    Asymmetric, Campaign) and sabotage mechanics with NOT gates.</li>
+            </ul>
+
+            <h2 data-i18n="arena-stack-title">Technical Architecture</h2>
+            <p data-i18n="arena-stack-desc">
+                Modern real-time architecture using <strong>FastAPI</strong> and <strong>Socket.IO</strong> for the
+                backend, with <strong>React</strong> and <strong>Framer Motion</strong> for a dynamic frontend. AI
+                capabilities powered by <strong>OpenAI GPT-4o-mini</strong>, <strong>Whisper</strong>, and
+                <strong>Edge-TTS</strong>.
+            </p>
+
+            <div style="margin-top: 2rem; text-align: center;">
+                <a href="https://github.com/fhp101ml/ArenaLogic" target="_blank" class="btn primary"
+                    data-i18n="arena-btn-source">
+                    <i class="fab fa-github"></i> View Source Code
+                </a>
+            </div>
+        </div>
+
+        <style>
+            /* Cinematic Carousel Styles */
+            .carousel-wrapper {
+                position: relative;
+                width: 100vw;
+                margin-left: calc(-50vw + 50%);
+                padding: 10rem 0;
+                /* Increased padding for massive separation */
+                margin-bottom: 8rem;
+                overflow: hidden;
+                perspective: 2000px;
+                background: radial-gradient(circle at 50% 50%, rgba(56, 189, 248, 0.08) 0%, transparent 70%);
+            }
+
+            .carousel-track {
+                display: flex;
+                gap: 5rem;
+                padding: 2rem 25%;
+                overflow-x: scroll;
+                scroll-snap-type: x mandatory;
+                scrollbar-width: none;
+                -ms-overflow-style: none;
+                transform-style: preserve-3d;
+            }
+
+            .carousel-track::-webkit-scrollbar {
+                display: none;
+            }
+
+            .carousel-item {
+                flex: 0 0 650px;
+                height: 450px;
+                position: relative;
+                scroll-snap-align: center;
+                transform-style: preserve-3d;
+                cursor: pointer;
+                transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.8s ease;
+                border-radius: 24px;
+            }
+
+            .item-content {
+                position: relative;
+                width: 100%;
+                height: 100%;
+                border-radius: 24px;
+                overflow: hidden;
+                border: 1px solid rgba(255, 255, 255, 0.1);
+                background: #000;
+                box-shadow: 0 30px 60px rgba(0, 0, 0, 0.6);
+                transform: translateZ(0);
+                transition: box-shadow 0.6s ease, border-color 0.6s ease, transform 0.6s ease;
+            }
+
+            .carousel-item:hover .item-content {
+                border-color: var(--main-color);
+                box-shadow: 0 40px 80px rgba(56, 189, 248, 0.25);
+                transform: scale(1.02) translateZ(20px);
+            }
+
+            .carousel-item img,
+            .carousel-item video {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+                transition: transform 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+                filter: brightness(0.9);
+            }
+
+            .carousel-item:hover img,
+            .carousel-item:hover video {
+                transform: scale(1.1);
+                filter: brightness(1);
+            }
+
+            /* Proximity Lighting/Glow */
+            .item-glow {
+                position: absolute;
+                inset: -100px;
+                background: radial-gradient(circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(56, 189, 248, 0.3), transparent 70%);
+                opacity: 0;
+                transition: opacity 0.5s ease;
+                pointer-events: none;
+                z-index: -1;
+            }
+
+            .carousel-item:hover .item-glow {
+                opacity: 1;
+            }
+
+            /* Overlay for active sensation */
+            .item-overlay {
+                position: absolute;
+                inset: 0;
+                background: linear-gradient(to top, rgba(15, 23, 42, 0.9), transparent 60%);
+                opacity: 0;
+                transition: opacity 0.4s ease;
+                display: flex;
+                align-items: flex-end;
+                justify-content: space-between;
+                padding: 2rem;
+                pointer-events: none;
+            }
+
+            .carousel-item:hover .item-overlay {
+                opacity: 1;
+            }
+
+            .overlay-content {
+                display: flex;
+                align-items: center;
+                gap: 1rem;
+            }
+
+            .overlay-content h4 {
+                color: #fff;
+                font-size: 1.2rem;
+                font-weight: 600;
+                margin: 0;
+            }
+
+            .overlay-content i {
+                font-size: 1.8rem;
+                color: var(--main-color);
+                filter: drop-shadow(0 0 8px var(--main-color));
+            }
+
+            /* Responsive */
+            @media (max-width: 1024px) {
+                .carousel-item {
+                    flex: 0 0 500px;
+                    height: 350px;
+                }
+            }
+
+            @media (max-width: 768px) {
+                .carousel-item {
+                    flex: 0 0 85vw;
+                    height: 300px;
+                }
+
+                .carousel-track {
+                    padding: 0 7.5vw;
+                    gap: 2rem;
+                }
+            }
+
+            /* Floating Background Elements */
+            .carousel-bg-shapes {
+                position: absolute;
+                inset: 0;
+                pointer-events: none;
+                z-index: -1;
+                overflow: hidden;
+            }
+
+            .shape {
+                position: absolute;
+                background: linear-gradient(45deg, var(--main-color), transparent);
+                border-radius: 50%;
+                filter: blur(100px);
+                opacity: 0.15;
+                animation: float-shapes 25s infinite alternate ease-in-out;
+            }
+
+            @keyframes float-shapes {
+                0% {
+                    transform: translate(0, 0) rotate(0deg) scale(1);
+                }
+
+                100% {
+                    transform: translate(150px, 80px) rotate(15deg) scale(1.3);
+                }
+            }
+        </style>
+
+        <div class="carousel-wrapper">
+            <div class="carousel-bg-shapes">
+                <div class="shape" style="width: 500px; height: 500px; top: -150px; left: -150px;"></div>
+                <div class="shape"
+                    style="width: 700px; height: 700px; bottom: -300px; right: -200px; animation-delay: -7s; background: linear-gradient(45deg, var(--accent-color), transparent);">
+                </div>
+            </div>
+
+            <div class="carousel-track" id="cinematic-track">
+                <div class="carousel-item" onclick="openLightbox(this)">
+                    <div class="item-content">
+                        <img src="backend/projects/arenaLogic/Screenshot%20from%202026-02-21%2014-02-06.png"
+                            alt="ArenaLogic Gameplay">
+                        <div class="item-glow"></div>
+                        <div class="item-overlay">
+                            <div class="overlay-content">
+                                <i class="fas fa-gamepad"></i>
+                                <h4>Experience Gameplay</h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="carousel-item" onclick="openLightbox(this)">
+                    <div class="item-content">
+                        <video src="backend/projects/arenaLogic/Screencast%20from%202026-02-21%2014-00-25.webm" muted
+                            loop playsinline autoplay></video>
+                        <div class="item-glow"></div>
+                        <div class="item-overlay">
+                            <div class="overlay-content">
+                                <i class="fas fa-play-circle"></i>
+                                <h4>Product Demo</h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="carousel-item" onclick="openLightbox(this)">
+                    <div class="item-content">
+                        <img src="backend/projects/arenaLogic/Screenshot%20from%202026-02-21%2014-00-14.png"
+                            alt="Hacker Dashboard">
+                        <div class="item-glow"></div>
+                        <div class="item-overlay">
+                            <div class="overlay-content">
+                                <i class="fas fa-terminal"></i>
+                                <h4>Hacker Dashboard</h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="carousel-item" onclick="openLightbox(this)">
+                    <div class="item-content">
+                        <img src="backend/projects/arenaLogic/Screenshot%20from%202026-02-21%2013-57-11.png"
+                            alt="Accessibility Control">
+                        <div class="item-glow"></div>
+                        <div class="item-overlay">
+                            <div class="overlay-content">
+                                <i class="fas fa-universal-access"></i>
+                                <h4>Inclusive Access</h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="carousel-item" onclick="openLightbox(this)">
+                    <div class="item-content">
+                        <img src="backend/projects/arenaLogic/Screenshot%20from%202026-02-21%2014-00-14.png"
+                            alt="UI Detail">
+                        <div class="item-glow"></div>
+                        <div class="item-overlay">
+                            <div class="overlay-content">
+                                <i class="fas fa-layer-group"></i>
+                                <h4>Logic Circuits</h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            // Organic Parallax and 3D Depth Logic
+            const track = document.getElementById('cinematic-track');
+            const items = document.querySelectorAll('.carousel-item');
+
+            const updateItems = () => {
+                const center = window.innerWidth / 2;
+
+                items.forEach(item => {
+                    const rect = item.getBoundingClientRect();
+                    const itemCenter = rect.left + rect.width / 2;
+                    const distanceFromCenter = itemCenter - center;
+                    const normalizedDistance = distanceFromCenter / (window.innerWidth / 2);
+
+                    // 3D Transform: Dynamic Rotation and Depth based on scroll position
+                    // We use non-linear mapping for a more cinematic feel
+                    const rotIntensity = 25;
+                    const depthIntensity = 300;
+
+                    const rotation = normalizedDistance * -rotIntensity; // Tilt away
+                    const depth = Math.pow(Math.abs(normalizedDistance), 1.2) * -depthIntensity; // Sink into distance
+                    const scale = 1.1 - Math.pow(Math.abs(normalizedDistance), 0.8) * 0.3; // Center is largest
+                    const opacity = 1.1 - Math.abs(normalizedDistance) * 0.8; // Extreme fade at edges
+
+                    item.style.transform = `
+                        rotateY(${rotation}deg) 
+                        translateZ(${depth}px) 
+                        scale(${scale})
+                    `;
+                    item.style.opacity = Math.max(0, Math.min(1, opacity));
+
+                    // Parallax effect on inner content
+                    const content = item.querySelector('.item-content');
+                    if (content) {
+                        content.style.transform = `translateX(${normalizedDistance * -30}px)`;
+                    }
+                });
+            };
+
+            track.addEventListener('scroll', () => {
+                requestAnimationFrame(updateItems);
+            });
+            window.addEventListener('resize', updateItems);
+
+            // Initial call
+            setTimeout(updateItems, 100);
+
+            // High-precision mouse-tracking glow effect
+            items.forEach(item => {
+                item.addEventListener('mousemove', (e) => {
+                    const rect = item.getBoundingClientRect();
+                    const x = ((e.clientX - rect.left) / rect.width) * 100;
+                    const y = ((e.clientY - rect.top) / rect.height) * 100;
+                    item.style.setProperty('--mouse-x', `${x}%`);
+                    item.style.setProperty('--mouse-y', `${y}%`);
+                });
+            });
+
+            // Fluid horizontal scroll with smooth momentum
+            track.addEventListener('wheel', (evt) => {
+                if (evt.deltaY != 0) {
+                    evt.preventDefault();
+                    track.scrollBy({
+                        left: evt.deltaY * 1.5,
+                        behavior: 'auto'
+                    });
+                }
+            }, { passive: false });
+        </script>
+
+
+        <div class="back-btn-container">
+            <a href="index.html#projects" class="btn secondary" data-i18n="arena-btn-back">
+                <i class="fas fa-arrow-left"></i> Back to Projects
+            </a>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <p data-i18n="footer-rights">&copy; 2024 Fernando Herrera. All rights reserved.</p>
+    </footer>
+
+    <!-- Lightbox Modal -->
+    <div class="lightbox" id="lightbox">
+        <i class="fas fa-times close-lightbox" onclick="closeLightbox()"></i>
+        <img id="lightbox-img" src="" alt="Full screen view">
+    </div>
+
+    <script src="script.js?v=1.1"></script>
+</body>
+
+</html>

@@ -249,7 +249,19 @@ const translations = {
         "mcp-stack-title": "Technical Architecture",
         "mcp-stack-desc": "Powered by a dual-backend architecture: an async <strong>FastAPI</strong> server orchestrating <strong>LangGraph</strong> state and Memory saving, bridged to a <strong>Streamlit</strong> UI for human experts.",
         "mcp-btn-source": "<i class='fab fa-github'></i> View Source Code",
-        "mcp-btn-back": "<i class='fas fa-arrow-left'></i> Back to Projects"
+        "mcp-btn-back": "<i class='fas fa-arrow-left'></i> Back to Projects",
+        "arena-title": "ArenaLogic - Logic Gates Multiplayer",
+        "arena-about-title": "About the Project",
+        "arena-about-desc": "A real-time competitive multiplayer game where teams collaborate to solve logic gate challenges. Features full voice accessibility for visually impaired players using AI-powered narration and voice commands.",
+        "arena-features-title": "Key Features",
+        "arena-feat-1": "<strong>Real-time Multiplayer:</strong> Socket.IO powered synchronization for team-based competition (Alpha/Beta teams).",
+        "arena-feat-2": "<strong>Accessibility Innovation:</strong> Complete voice control system for visually impaired players including voice commands and auto-narration.",
+        "arena-feat-3": "<strong>AI Assistant:</strong> LangGraph-powered agent with conversation memory that guides players and handles voice-controlled instructions.",
+        "arena-feat-4": "<strong>Advanced Game Mechanics:</strong> Multiple game modes (Competitive, Asymmetric, Campaign) and sabotage mechanics with NOT gates.",
+        "arena-stack-title": "Technical Stack",
+        "arena-stack-desc": "Modern real-time architecture using <strong>FastAPI</strong> and <strong>Socket.IO</strong> for the backend, with <strong>React</strong> and <strong>Framer Motion</strong> for a dynamic frontend. AI capabilities powered by <strong>OpenAI GPT-4o-mini</strong>, <strong>Whisper</strong>, and <strong>Edge-TTS</strong>.",
+        "arena-btn-source": "<i class='fab fa-github'></i> View Source Code",
+        "arena-btn-back": "<i class='fas fa-arrow-left'></i> Back to Projects"
     },
     es: {
         "nav-home": "Inicio",
@@ -319,7 +331,19 @@ const translations = {
         "mcp-stack-title": "Arquitectura Técnica",
         "mcp-stack-desc": "Desplegada desde Docker y coordinada por FastAPI al vuelo asíncrono para inyectar su estado sobre los endpoints que la UI modular Streamlit asume, sin bloqueo de estado o contención.",
         "mcp-btn-source": "<i class='fab fa-github'></i> Ver Código Fuente",
-        "mcp-btn-back": "<i class='fas fa-arrow-left'></i> Volver a Proyectos"
+        "mcp-btn-back": "<i class='fas fa-arrow-left'></i> Volver a Proyectos",
+        "arena-title": "ArenaLogic - Juego de Puertas Lógicas",
+        "arena-about-title": "Sobre el Proyecto",
+        "arena-about-desc": "Un juego competitivo multijugador en tiempo real donde los equipos colaboran para resolver desafíos de puertas lógicas. Cuenta con accesibilidad por voz completa para jugadores con discapacidad visual mediante narración impulsada por IA y comandos de voz.",
+        "arena-features-title": "Características Clave",
+        "arena-feat-1": "<strong>Multijugador en Tiempo Real:</strong> Sincronización mediante Socket.IO para competición por equipos (Alpha/Beta).",
+        "arena-feat-2": "<strong>Innovación en Accesibilidad:</strong> Sistema completo de control por voz para jugadores con discapacidad visual, incluyendo comandos de voz y auto-narración.",
+        "arena-feat-3": "<strong>Asistente de IA:</strong> Agente basado en LangGraph con memoria de conversación que guía a los jugadores y gestiona instrucciones por voz.",
+        "arena-feat-4": "<strong>Mecánicas Avanzadas:</strong> Múltiples modos de juego (Competitivo, Asimétrico, Campaña) y mecánicas de sabotaje con puertas NOT.",
+        "arena-stack-title": "Stack Técnico",
+        "arena-stack-desc": "Arquitectura moderna en tiempo real usando <strong>FastAPI</strong> y <strong>Socket.IO</strong> en el backend, con <strong>React</strong> y <strong>Framer Motion</strong> para un frontend dinámico. Capacidades de IA potenciadas por <strong>OpenAI GPT-4o-mini</strong>, <strong>Whisper</strong> y <strong>Edge-TTS</strong>.",
+        "arena-btn-source": "<i class='fab fa-github'></i> Ver Código Fuente",
+        "arena-btn-back": "<i class='fas fa-arrow-left'></i> Volver a Proyectos"
     }
 };
 
