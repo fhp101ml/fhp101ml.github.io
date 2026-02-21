@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MCP AI Data Agent | fhp101ml</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css?v=1.1">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .project-detail {
+            padding-top: 12rem;
+            min-height: 100vh;
+        }
+
+        .project-header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .project-header h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(to right, var(--text-color), var(--main-color));
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .project-meta {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .project-meta span {
+            background: rgba(56, 189, 248, 0.1);
+            color: var(--main-color);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+        }
+
+        /* Modern Gallery Styles */
+        .gallery-container {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            padding: 2rem 0;
+            margin-bottom: 4rem;
+            perspective: 1000px;
+            flex-wrap: wrap;
+        }
+
+        .gallery-item {
+            position: relative;
+            width: 45%;
+            max-width: 500px;
+            cursor: pointer;
+            transition: transform 0.5s ease, box-shadow 0.5s ease;
+            transform-style: preserve-3d;
+            border-radius: 15px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .gallery-item:hover {
+            transform: translateY(-10px) rotateX(5deg);
+            box-shadow: 0 20px 40px rgba(56, 189, 248, 0.2);
+            border-color: var(--main-color);
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 350px;
+            object-fit: contain;
+            /* Ensure full image is visible, as graphs might be wide */
+            object-position: center;
+            display: block;
+            transition: transform 0.5s ease;
+            background: var(--glass-bg);
+        }
+
+        .gallery-item:hover img {
+            transform: scale(1.05);
+        }
+
+        .gallery-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, rgba(15, 23, 42, 0.8), transparent);
+            opacity: 0;
+            transition: opacity 0.3s;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            padding-bottom: 1.5rem;
+        }
+
+        .gallery-item:hover .gallery-overlay {
+            opacity: 1;
+        }
+
+        .gallery-overlay i {
+            color: var(--text-color);
+            font-size: 1.5rem;
+            background: var(--main-color);
+            padding: 0.8rem;
+            border-radius: 50%;
+            box-shadow: 0 0 15px var(--main-color);
+        }
+
+        .project-content {
+            max-width: 800px;
+            margin: 0 auto;
+            background: var(--glass-bg);
+            padding: 3rem;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            margin-bottom: 4rem;
+        }
+
+        .project-content h2 {
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            color: var(--main-color);
+        }
+
+        .project-content p {
+            color: #94a3b8;
+            line-height: 1.8;
+            margin-bottom: 1.5rem;
+        }
+
+        .project-content ul {
+            list-style: none;
+            margin-bottom: 1.5rem;
+        }
+
+        .project-content ul li {
+            color: #94a3b8;
+            margin-bottom: 0.8rem;
+            padding-left: 1.5rem;
+            position: relative;
+        }
+
+        .project-content ul li::before {
+            content: '▹';
+            position: absolute;
+            left: 0;
+            color: var(--main-color);
+        }
+
+        .back-btn-container {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        /* Lightbox Styles */
+        .lightbox {
+            position: fixed;
+            z-index: 10000;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(10px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .lightbox.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .lightbox img {
+            max-width: 90%;
+            max-height: 85vh;
+            border-radius: 10px;
+            box-shadow: 0 0 50px rgba(0, 0, 0, 0.5);
+            transform: scale(0.9);
+            transition: transform 0.3s ease;
+        }
+
+        .lightbox.active img {
+            transform: scale(1);
+        }
+
+        .close-lightbox {
+            position: absolute;
+            top: 2rem;
+            right: 2rem;
+            color: var(--text-color);
+            font-size: 2rem;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        .close-lightbox:hover {
+            color: var(--main-color);
+        }
+
+        /* Mobile adjustments */
+        @media (max-width: 768px) {
+            .project-header h1 {
+                font-size: 2.5rem;
+            }
+
+            .gallery-item {
+                width: 90%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="cursor-dot"></div>
+    <div class="cursor-outline"></div>
+
+    <header class="header">
+        <a href="index.html" class="logo">fhp101ml<span class="dot">.</span></a>
+        <nav class="navbar">
+            <a href="index.html#home" data-i18n="nav-home">Home</a>
+            <a href="index.html#projects" class="active" data-i18n="nav-projects">Projects</a>
+            <a href="index.html#contact" data-i18n="nav-contact">Contact</a>
+        </nav>
+        <div class="lang-switch">
+            <span class="lang-btn active" data-lang="en">EN</span>
+            <span class="divider">|</span>
+            <span class="lang-btn" data-lang="es">ES</span>
+        </div>
+        <div class="menu-btn">
+            <i class="fas fa-bars"></i>
+        </div>
+    </header>
+
+    <section class="project-detail">
+        <div class="project-header">
+            <h1 data-i18n="mcp-title">MCP AI Data Agent (Conversational KDD)</h1>
+            <div class="project-meta">
+                <span>FastAPI</span>
+                <span>LangGraph</span>
+                <span>MCP (Model Context Protocol)</span>
+                <span>Streamlit</span>
+                <span>Docker Sandbox</span>
+                <span>Data Science</span>
+            </div>
+        </div>
+
+        <!-- Modern 3D Gallery -->
+        <div class="gallery-container">
+            <div class="gallery-item" onclick="openLightbox(this)">
+                <img src="backend/projects/WebAssitant/mcpDataAnalysis/image.png" alt="Data Analysis Interface">
+                <div class="gallery-overlay">
+                    <i class="fas fa-search-plus"></i>
+                </div>
+            </div>
+            <div class="gallery-item" onclick="openLightbox(this)">
+                <img src="backend/projects/WebAssitant/mcpDataAnalysis/image%20copy.png"
+                    alt="Data Profiling and Agent Interactions">
+                <div class="gallery-overlay">
+                    <i class="fas fa-search-plus"></i>
+                </div>
+            </div>
+            <div class="gallery-item" onclick="openLightbox(this)">
+                <img src="backend/projects/WebAssitant/mcpDataAnalysis/image%20copy%202.png"
+                    alt="Artifacts and Visualizations">
+                <div class="gallery-overlay">
+                    <i class="fas fa-search-plus"></i>
+                </div>
+            </div>
+            <div class="gallery-item" onclick="openLightbox(this)">
+                <img src="backend/projects/WebAssitant/mcpDataAnalysis/kdd_graph.png" alt="KDD Graph Architecture">
+                <div class="gallery-overlay">
+                    <i class="fas fa-search-plus"></i>
+                </div>
+            </div>
+        </div>
+
+        <div class="project-content">
+            <h2 data-i18n="mcp-about-title">About the Project</h2>
+            <p data-i18n="mcp-about-desc">
+                A conversational system acting as an analytical copilot that guides the user through the entire
+                Knowledge Discovery in Databases (KDD) process. It operates as a methodological facilitator and workflow
+                orchestrator through natural language, running automated analysis and generating interactive dashboards
+                summarizing insights and machine learning models.
+            </p>
+
+            <h2 data-i18n="mcp-features-title">Key Features</h2>
+            <ul>
+                <li data-i18n="mcp-feat-1"><strong>Multi-Agent Orquestration:</strong> LangGraph-based state machine
+                    that conditionally routes conversations between generalist and specialist agents (EDA, Data Prep
+                    MLOps, Modeler).</li>
+                <li data-i18n="mcp-feat-2"><strong>MCP Universal Connectivity:</strong> Fully exposed as an MCP (Model
+                    Context Protocol) Server, allowing any compatible corporate AI ecosystem (like Claude Desktop or
+                    Cursor) to plug into the KDD engine as a delegable specialist tool.</li>
+                <li data-i18n="mcp-feat-3"><strong>Isolated Code Execution:</strong> Agents delegate Python analysis to
+                    an ephemeral Docker Sandbox, ensuring perfectly safe, stateless code execution.</li>
+                <li data-i18n="mcp-feat-4"><strong>Data Artifact Lineage:</strong> Persistent storage of datasets,
+                    generated charts, and models using MinIO (S3), dynamically linked back to the application state to
+                    assemble final reports interactively via LLM.</li>
+            </ul>
+
+            <h2 data-i18n="mcp-stack-title">Technical Architecture</h2>
+            <p data-i18n="mcp-stack-desc">
+                Powered by a dual-backend architecture: an async <strong>FastAPI</strong> server orchestrating
+                <strong>LangGraph</strong> state and Memory saving, bridged to a <strong>Streamlit</strong> UI for human
+                experts. All untrusted executions occur within a secure <strong>Docker</strong> container, with
+                artifacts flowing into <strong>MinIO</strong> objects storage.
+            </p>
+
+            <div style="margin-top: 2rem; text-align: center;">
+                <a href="https://github.com/fhp101ml/mcpDataAnalysis" target="_blank" class="btn primary"
+                    data-i18n="mcp-btn-source">
+                    <i class="fab fa-github"></i> View Source Code
+                </a>
+            </div>
+        </div>
+
+        <div class="back-btn-container">
+            <a href="index.html#projects" class="btn secondary" data-i18n="mcp-btn-back">
+                <i class="fas fa-arrow-left"></i> Back to Projects
+            </a>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <p data-i18n="footer-rights">&copy; 2024 Fernando Herrera. All rights reserved.</p>
+    </footer>
+
+    <!-- Lightbox Modal -->
+    <div class="lightbox" id="lightbox">
+        <i class="fas fa-times close-lightbox" onclick="closeLightbox()"></i>
+        <img id="lightbox-img" src="" alt="Full screen view">
+    </div>
+
+    <script src="script.js?v=1.1"></script>
+</body>
+
+</html>

@@ -237,7 +237,19 @@ const translations = {
         "petshop-stack-title": "Technical Stack",
         "petshop-stack-desc": "Built with a robust modern stack: <strong>Backend</strong> using FastAPI and LangGraph for agentic workflows. <strong>Frontend</strong> using React and Vite. Real-time communication via Socket.IO.",
         "petshop-btn-source": "<i class='fab fa-github'></i> View Source Code",
-        "petshop-btn-back": "<i class='fas fa-arrow-left'></i> Back to Projects"
+        "petshop-btn-back": "<i class='fas fa-arrow-left'></i> Back to Projects",
+        "mcp-title": "MCP AI Data Agent (Conversational KDD)",
+        "mcp-about-title": "About the Project",
+        "mcp-about-desc": "A conversational system acting as an analytical copilot that guides the user through the entire Knowledge Discovery in Databases (KDD) process. It operates as a methodological facilitator and workflow orchestrator through natural language, running automated analysis and generating interactive dashboards summarizing insights and machine learning models.",
+        "mcp-features-title": "Key Features",
+        "mcp-feat-1": "<strong>Multi-Agent Orquestration:</strong> LangGraph-based state machine that conditionally routes conversations between generalist and specialist agents (EDA, Data Prep MLOps, Modeler).",
+        "mcp-feat-2": "<strong>MCP Universal Connectivity:</strong> Fully exposed as an MCP (Model Context Protocol) Server, allowing any compatible corporate AI ecosystem (like Claude Desktop or Cursor) to plug into the KDD engine as a delegable specialist tool.",
+        "mcp-feat-3": "<strong>Isolated Code Execution:</strong> Agents delegate Python analysis to an ephemeral Docker Sandbox, ensuring perfectly safe, stateless code execution.",
+        "mcp-feat-4": "<strong>Data Artifact Lineage:</strong> Persistent storage of datasets, generated charts, and models using MinIO (S3), dynamically linked back to the application state.",
+        "mcp-stack-title": "Technical Architecture",
+        "mcp-stack-desc": "Powered by a dual-backend architecture: an async <strong>FastAPI</strong> server orchestrating <strong>LangGraph</strong> state and Memory saving, bridged to a <strong>Streamlit</strong> UI for human experts.",
+        "mcp-btn-source": "<i class='fab fa-github'></i> View Source Code",
+        "mcp-btn-back": "<i class='fas fa-arrow-left'></i> Back to Projects"
     },
     es: {
         "nav-home": "Inicio",
@@ -295,7 +307,19 @@ const translations = {
         "petshop-stack-title": "Stack Técnico",
         "petshop-stack-desc": "Construido con un stack moderno y robusto: <strong>Backend</strong> usando FastAPI y LangGraph para flujos agénticos. <strong>Frontend</strong> usando React y Vite. Comunicación en tiempo real vía Socket.IO.",
         "petshop-btn-source": "<i class='fab fa-github'></i> Ver Código Fuente",
-        "petshop-btn-back": "<i class='fas fa-arrow-left'></i> Volver a Proyectos"
+        "petshop-btn-back": "<i class='fas fa-arrow-left'></i> Volver a Proyectos",
+        "mcp-title": "Motor KDD Conversacional",
+        "mcp-about-title": "Sobre el Proyecto",
+        "mcp-about-desc": "Sistema conversacional que acompaña al usuario durante el proceso de Descubrimiento de Conocimiento en Datos (KDD). Funciona como un copiloto analítico, facilitador metodológico y orquestador del workflow que guía al usuario mediante lenguaje natural, ejecuta análisis de forma automática y culmina con un dashboard interactivo.",
+        "mcp-features-title": "Características Clave",
+        "mcp-feat-1": "<strong>Orquestación Multi-Agente:</strong> Máquina de estados con LangGraph que enruta dinámicamente conversaciones a la función óptima (EDA, MLOps, Modeler).",
+        "mcp-feat-2": "<strong>Conectividad Universal MCP:</strong> Expuesto completamente como servidor MCP (Model Context Protocol), ofreciendo sus análisis como tools estandarizados conectables a LLMs como Claude.",
+        "mcp-feat-3": "<strong>Ejecución Aislada de Código:</strong> Los agentes delegan el código Python generado a un contenedor local Sandbox con persistencia Docker, asegurando ejecución atómica y segura.",
+        "mcp-feat-4": "<strong>Linaje de Artefactos (S3):</strong> Almacenamiento perenne de artefactos como datasets y binarios mediante S3 enlazado localmente con el estado del workflow.",
+        "mcp-stack-title": "Arquitectura Técnica",
+        "mcp-stack-desc": "Desplegada desde Docker y coordinada por FastAPI al vuelo asíncrono para inyectar su estado sobre los endpoints que la UI modular Streamlit asume, sin bloqueo de estado o contención.",
+        "mcp-btn-source": "<i class='fab fa-github'></i> Ver Código Fuente",
+        "mcp-btn-back": "<i class='fas fa-arrow-left'></i> Volver a Proyectos"
     }
 };
 
