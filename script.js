@@ -372,19 +372,52 @@ function setLanguage(lang) {
 // Lightbox Logic
 function openLightbox(element) {
     const lightbox = document.getElementById('lightbox');
-    const lightboxImg = document.getElementById('lightbox-img');
-    const imgSrc = element.querySelector('img').src;
 
-    lightboxImg.src = imgSrc;
+    // Clear previous content
+    lightbox.innerHTML = '<i class="fas fa-times close-lightbox" onclick="closeLightbox()"></i>';
+
+    const imgElement = element.querySelector('img');
+    const videoElement = element.querySelector('video');
+
+    if (imgElement) {
+        const newImg = document.createElement('img');
+        newImg.src = imgElement.src;
+        newImg.alt = imgElement.alt || 'Full screen view';
+        newImg.id = 'lightbox-media';
+        lightbox.appendChild(newImg);
+    } else if (videoElement) {
+        const newVideo = document.createElement('video');
+        newVideo.src = videoElement.src;
+        newVideo.controls = true;
+        newVideo.autoplay = true;
+        newVideo.id = 'lightbox-media';
+        newVideo.style.maxWidth = '90%';
+        newVideo.style.maxHeight = '85vh';
+        newVideo.style.borderRadius = '10px';
+        newVideo.style.boxShadow = '0 0 50px rgba(0, 0, 0, 0.5)';
+        newVideo.style.transform = 'scale(0.9)';
+        newVideo.style.transition = 'transform 0.3s ease';
+        lightbox.appendChild(newVideo);
+
+        // Ensure animation happens
+        setTimeout(() => {
+            newVideo.style.transform = 'scale(1)';
+        }, 50);
+    }
+
     lightbox.classList.add('active');
 }
 
 function closeLightbox() {
     const lightbox = document.getElementById('lightbox');
+    const video = lightbox.querySelector('video');
+    if (video) {
+        video.pause(); // Stop video playing when closing
+    }
     lightbox.classList.remove('active');
 }
 
-// Close lightbox on clicking outside image
+// Close lightbox on clicking outside media
 document.addEventListener('click', function (e) {
     const lightbox = document.getElementById('lightbox');
     if (e.target === lightbox) {
